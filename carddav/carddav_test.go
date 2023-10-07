@@ -113,7 +113,6 @@ func TestAddressBookDiscovery(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-
 			h := Handler{&testBackend{}, tc.prefix}
 			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				ctx := r.Context()
@@ -135,21 +134,21 @@ func TestAddressBookDiscovery(t *testing.T) {
 			if err != nil {
 				t.Fatalf("error creating client: %s", err)
 			}
-			cup, err := client.FindCurrentUserPrincipal()
+			cup, err := client.FindCurrentUserPrincipal(context.Background())
 			if err != nil {
 				t.Fatalf("error finding user principal url: %s", err)
 			}
 			if cup != tc.currentUserPrincipal {
 				t.Fatalf("Found current user principal URL '%s', expected '%s'", cup, tc.currentUserPrincipal)
 			}
-			hsp, err := client.FindAddressBookHomeSet(cup)
+			hsp, err := client.FindAddressBookHomeSet(context.Background(), cup)
 			if err != nil {
 				t.Fatalf("error finding home set path: %s", err)
 			}
 			if hsp != tc.homeSetPath {
 				t.Fatalf("Found home set path '%s', expected '%s'", hsp, tc.homeSetPath)
 			}
-			abs, err := client.FindAddressBooks(hsp)
+			abs, err := client.FindAddressBooks(context.Background(), hsp)
 			if err != nil {
 				t.Fatalf("error finding address books: %s", err)
 			}
